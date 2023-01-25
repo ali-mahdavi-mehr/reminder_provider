@@ -1,0 +1,64 @@
+version: "3"
+
+services:
+ redis:
+   container_name: redis
+   restart: always
+   image: redis
+   ports:
+      - "6380:6379"
+ nginx:
+   build: './nginx'
+   container_name: 'nginx'
+   restart: 'always'
+   ports:
+     - "80:80"
+   depends_on:
+     - web
+
+ db:
+   container_name: db
+   restart: always
+   image: postgres
+   volumes:
+     - ./data/db:/var/lib/postgresql/data
+   environment:
+     - POSTGRES_DB=${POSTGRES_DB}
+     - POSTGRES_USER=${POSTGRES_USER}
+     - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+ web:
+   container_name: web
+   restart: always
+   build: .
+   volumes:
+     - .:/code
+   expose:
+     - 8000
+   environment:
+     - POSTGRES_NAME=${POSTGRES_NAME}
+     - POSTGRES_USER=${POSTGRES_USER}
+     - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+   depends_on:
+     - db
+
+
+ rabbitmq:
+  image: rabbitmq:3-management
+  container_name: 'myrabbit'
+  ports:
+      - "5672:5672"
+      - "15672:15672"
+  environment:
+      rabbitmq_uri: "amqp://127.0.0.1:5672"
+
+ celery:
+  container_name: "celery"
+  build: .
+  command: celery -A celerymanagement worker -B -l info
+  environment:
+    - CELERY_BROKER_URL=amqp://myrabbit:5672
+    - STDOUT_LOGGING=1
+  volumes:
+    - ./app:/usr/src/app
+  depends_on:
+    - rabbitmq
