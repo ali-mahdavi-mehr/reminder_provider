@@ -22,10 +22,10 @@ class CreateReminderView(APIView):
             clocked_time=reminder_time
         )
         result = PeriodicTask.objects.create(
-            clocked=schedule,  # we created this above.
-            name=f"{data['user']}-everyday-at {data['hour']}:{data['minute']}",  # simply describes this periodic task.
-            task='scheduler.tasks.send_message',
-            args=data['coins'],
+            clocked=schedule,
+            name=f"{data['user']}-everyday-at {data['hour']}:{data['minute']}",
+            task='scheduler.tasks.send_message_coin_detail',
+            args=(data['user'], data['coins']),
             one_off=True
         )
 

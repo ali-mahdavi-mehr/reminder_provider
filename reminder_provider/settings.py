@@ -125,7 +125,6 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 CELERY_IMPORTS = [
     'scheduler.tasks',
-    'scheduler.cron',
 ]
 
 CELERY_BROKER_URL = env("RABBITMQ_URL")

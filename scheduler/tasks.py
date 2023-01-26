@@ -18,7 +18,7 @@ env = environ.Env(
 environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
 
 
-async def send(user, coins):
+async def send_coin_detail_message(user, coins):
     text = "your alert is triggered\n"
     bot = Bot(env("TELEGRAM_TOKEN"))
     coins = [coin.strip(" ") for coin in coins.split(",")]
@@ -31,14 +31,19 @@ async def send(user, coins):
 
 
 @shared_task
-def send_message(user: str, coins: str):
-    asyncio.run(send(user, coins))
+def send_message_coin_detail(user: str, coins: str):
+    asyncio.run(send_coin_detail_message(user, coins))
     return True
 
 
 @shared_task
-def update_for_tommorow():
-    ClockedSchedule.objects.filter(clocked_time__lt=datetime.utcnow()).update(clocked_time=F('clocked_time') + timedelta(days=1))
+def update_schedules_for_tommorow():
+    now = datetime.utcnow()
+    ClockedSchedule.objects.filter(clocked_time__lt=datetime.utcnow()).update(
+        clocked_time__year=now.year,
+        clocked_time__month=now.month,
+        clocked_time__day=now.day
+    )
     PeriodicTask.objects.filter(enabled=False).update(enabled=True)
 
 
