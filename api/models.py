@@ -1,6 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
-
+from django.core.validators import MaxValueValidator, MinValueValidator
 from api.manager import CustomUserManager
 
 
@@ -18,5 +18,15 @@ class User(AbstractUser):
 class Reminder(models.Model):
     user = models.CharField(max_length=100)
     coins = models.TextField()
-    hour = models.IntegerField()
-    minute = models.IntegerField()
+    hour = models.IntegerField(
+        validators=[
+            MaxValueValidator(23),
+            MinValueValidator(0)
+        ]
+    )
+    minute = models.IntegerField(
+        validators=[
+            MaxValueValidator(59),
+            MinValueValidator(0)
+        ]
+    )
