@@ -5,6 +5,8 @@ import os
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 from celery.schedules import crontab
 
+from scheduler import redis_configs
+
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 env = environ.Env(
@@ -89,7 +91,7 @@ AUTH_PASSWORD_VALIDATORS = [
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
 ]
-
+redis_configs.redis_db.set("BTC")
 LANGUAGE_CODE = 'en-us'
 
 TIME_ZONE = 'UTC'
@@ -145,5 +147,5 @@ WORKER_PREFETCH_MULTIPLIER = 6
 TASK_ALWAYS_EAGER = False
 
 CRONJOBS = [
-    ('*/5 * * * *', 'scheduler.cronjobs.update_coins')
+    ('*/5 * * * *', 'scheduler.cron.update_coins')
 ]
