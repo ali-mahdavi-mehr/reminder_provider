@@ -2,13 +2,11 @@ from pathlib import Path
 import environ
 import os
 
-# Build paths inside the project like this: BASE_DIR / 'subdir'.
 from celery.schedules import crontab
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 env = environ.Env(
-    # set casting, default value
     DEBUG=(bool, False)
 )
 

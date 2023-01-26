@@ -1,6 +1,6 @@
 from datetime import datetime, timedelta
 
-from django_celery_beat.models import IntervalSchedule, PeriodicTask, ClockedSchedule
+from django_celery_beat.models import PeriodicTask, ClockedSchedule
 from rest_framework.views import APIView
 from api.serializer import ReminderSerializer
 from django.http.response import JsonResponse

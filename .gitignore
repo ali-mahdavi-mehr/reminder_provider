@@ -2,6 +2,7 @@ venv/
 *.pyc
 *.xml
 .idea
-static
 staticfiles
 data
+static/admin
+static/rest_framework
