@@ -11,7 +11,8 @@ class CreateReminderView(APIView):
 
     def post(self, request):
         data = request.POST
-        reminder_time = datetime.utcnow().replace(minute=int(data["minute"]), hour=int(data["hour"]))
+        reminder_time = datetime.utcnow().replace(minute=int(data["minute"]), hour=int(data["hour"]), second=0,
+                                                  microsecond=0)
         if reminder_time <= datetime.utcnow():
             reminder_time = reminder_time.replace(
                 day=datetime.utcnow() + timedelta(days=1)

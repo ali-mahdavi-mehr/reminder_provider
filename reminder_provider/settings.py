@@ -5,8 +5,6 @@ import os
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 from celery.schedules import crontab
 
-from scheduler import redis_configs
-
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 env = environ.Env(
@@ -33,7 +31,7 @@ INSTALLED_APPS = [
     'django_celery_beat',
     "api.apps.ApiConfig",
     "scheduler",
-    'django_crontab',
+    "django_cron",
 ]
 
 MIDDLEWARE = [
@@ -91,7 +89,7 @@ AUTH_PASSWORD_VALIDATORS = [
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
 ]
-redis_configs.redis_db.set("BTC")
+
 LANGUAGE_CODE = 'en-us'
 
 TIME_ZONE = 'UTC'
@@ -122,21 +120,14 @@ REST_FRAMEWORK = {
         'user': '1000/day',
     },
 
-    # API testing configurations
     'TEST_REQUEST_DEFAULT_FORMAT': 'json'
 }
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-# CELERY_BEAT_SCHEDULE = {
-#     "ScrapeStuff": {
-#         'task': 'scheduler.tasks.send_message',
-#         'schedule': 10  # crontab(minute="*/30")
-#     }
-# }
-
 CELERY_IMPORTS = [
     'scheduler.tasks',
+    'scheduler.cron',
 ]
 
 CELERY_BROKER_URL = env("RABBITMQ_URL")
@@ -146,6 +137,6 @@ CELERY_TASK_DEFAULT_QUEUE = 'default'
 WORKER_PREFETCH_MULTIPLIER = 6
 TASK_ALWAYS_EAGER = False
 
-CRONJOBS = [
-    ('*/5 * * * *', 'scheduler.cron.update_coins')
+CRON_CLASSES = [
+    "scheduler.cron.UpdateCoins",
 ]
