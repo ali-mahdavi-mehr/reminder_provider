@@ -6,3 +6,4 @@ staticfiles
 data
 static/admin
 static/rest_framework
+.env
