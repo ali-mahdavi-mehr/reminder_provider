@@ -1,4 +1,16 @@
+import os
+
+import environ
 from redis import Redis
 
-redis_db = Redis.from_url('redis://192.168.30.12:6380/0')
+from reminder_provider.settings import BASE_DIR
+
+env = environ.Env(
+    # set casting, default value
+    DEBUG=(bool, False)
+)
+
+environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
+
+redis_db = Redis.from_url(env("REDIS_URL"))
 

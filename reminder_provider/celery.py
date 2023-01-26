@@ -21,7 +21,3 @@ app.config_from_object('django.conf:settings', namespace='CELERY')
 app.autodiscover_tasks(lambda: settings.INSTALLED_APPS)
 
 
-@app.task(bind=True)
-def debug_task(*args, **kwargs):
-    print("hi\n")
-    # print(f'Request: {self.request!r}')

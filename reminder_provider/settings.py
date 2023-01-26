@@ -30,7 +30,8 @@ INSTALLED_APPS = [
     'rest_framework',
     'django_celery_beat',
     "api.apps.ApiConfig",
-    # "scheduler"
+    "scheduler",
+    'django_crontab',
 ]
 
 MIDDLEWARE = [
@@ -63,14 +64,13 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'reminder_provider.wsgi.application'
 
-
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': env('POSTGRES_NAME'),
         'USER': env('POSTGRES_USER'),
         'PASSWORD': env('POSTGRES_PASSWORD'),
-        'HOST': 'localhost',
+        'HOST': 'db',
         'PORT': 5432,
     }
 }
@@ -90,15 +90,15 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
 LANGUAGE_CODE = 'en-us'
 
 TIME_ZONE = 'UTC'
 
 USE_I18N = True
-
 USE_TZ = True
-STATIC_URL = "static/"
+
+STATIC_URL = 'static/'
+STATIC_ROOT = BASE_DIR / 'static'
 
 AUTH_USER_MODEL = 'api.User'
 
@@ -137,12 +137,13 @@ CELERY_IMPORTS = [
     'scheduler.tasks',
 ]
 
-CELERY_BROKER_URL = 'redis://192.168.30.12:6380'
-CELERY_RESULT_BACKEND = 'redis://192.168.30.12:6380'
-# CELERY_ACCEPT_CONTENT = ['application/json']
-# CELERY_TASK_SERIALIZER = 'json'
-# CELERY_RESULT_SERIALIZER = 'json'
+CELERY_BROKER_URL = env("RABBITMQ_URL")
+CELERY_RESULT_BACKEND = "rpc://"
 CELERY_TIMEZONE = 'UTC'
-# CELERY_TASK_DEFAULT_QUEUE = 'default'
-# WORKER_PREFETCH_MULTIPLIER = 6
-# TASK_ALWAYS_EAGER = False
+CELERY_TASK_DEFAULT_QUEUE = 'default'
+WORKER_PREFETCH_MULTIPLIER = 6
+TASK_ALWAYS_EAGER = False
+
+CRONJOBS = [
+    ('*/5 * * * *', 'scheduler.cronjobs.update_coins')
+]

@@ -6,6 +6,7 @@ ENV PYTHONUNBUFFERED=1
 ENV DJANGO_SUPERUSER_PASSWORD admin
 ENV ADMIN_EMAIL admin@admin.admin
 
+
 WORKDIR /code
 
 COPY requirements.txt /code/
@@ -19,4 +20,5 @@ CMD python3 manage.py makemigrations --noinput && \
     python3 manage.py migrate --noinput && \
     python3 manage.py collectstatic --noinput && \
     python3 manage.py createsuperuser --email $ADMIN_EMAIL --noinput || true && \
-    gunicorn -b 0.0.0.0:8000 email_base_registeration.wsgi
+    python3 manage.py crontab add && \
+    gunicorn -b 0.0.0.0:8000 reminder_provider.wsgi
