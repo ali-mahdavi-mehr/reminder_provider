@@ -20,7 +20,7 @@ class Reminder(models.Model):
         ("p", "PRICE"),
         ("v", "VOLUME")
     )
-    reminder_type = models.CharField(max_length=5, choices=REMINDER_TYPES)
+    reminder_type = models.CharField(max_length=1, choices=REMINDER_TYPES, default="p")
     user = models.CharField(max_length=100)
     coins = models.TextField()
     hour = models.IntegerField(
