@@ -1,21 +1,14 @@
 import asyncio
 import json
-from datetime import timedelta, datetime
-
+from datetime import datetime
 from celery import shared_task
 from django_celery_beat.models import PeriodicTask, ClockedSchedule
 from telegram import Bot
+from reminder_provider.settings import env
 from scheduler.redis_configs import redis_db
-import os
-import environ
-from django.db.models import F
-from reminder_provider.settings import BASE_DIR
+from utils.price_generator import price_seperator
 
-env = environ.Env(
-    DEBUG=(bool, False)
-)
 
-environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
 
 
 async def send_coin_detail_message(user, coins):
@@ -25,7 +18,7 @@ async def send_coin_detail_message(user, coins):
     for coin in coins:
         c = redis_db.get(coin) or json.dumps({"name": "ali", "price": "1322323"})
         c = json.loads(c)
-        text += f"{coin} ({c['name']}) => {c['price']}\n"
+        text += f"{coin} ({c['name']}) => {price_seperator(c['price'])}$\n"
 
     await bot.send_message(chat_id=user, text=text)
 
@@ -37,7 +30,7 @@ def send_message_coin_detail(user: str, coins: str):
 
 
 @shared_task
-def update_schedules_for_tommorow():
+def update_schedules_for_tomorrow():
     now = datetime.utcnow()
     ClockedSchedule.objects.filter(clocked_time__lt=datetime.utcnow()).update(
         clocked_time__year=now.year,
