@@ -67,6 +67,7 @@ services:
     - ./app:/usr/src/app
   depends_on:
     - rabbitmq
+    - web
 
  flower:
     container_name: "flower"
@@ -91,4 +92,5 @@ services:
     depends_on:
       - rabbitmq
       - celery
+      - web
 
