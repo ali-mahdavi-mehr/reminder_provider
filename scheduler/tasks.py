@@ -21,7 +21,7 @@ async def send_coin_detail_message(user, coins, reminder_type):
             amount = price_seperator(c['price']) + "$"
         elif reminder_type == "v":
             amount = "$" + number_generator(c['volume_24h'])
-        text += f"{coin} ({c['name']}) => {amount}$\n"
+        text += f"{coin} ({c['name']}) => {amount}\n"
 
     await bot.send_message(chat_id=user, text=text)
 
