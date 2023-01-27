@@ -16,6 +16,11 @@ class User(AbstractUser):
 
 
 class Reminder(models.Model):
+    REMINDER_TYPES = (
+        ("P", "PRICE"),
+        ("v", "VOLUME")
+    )
+    reminder_type = models.CharField(max_length=5, choices=REMINDER_TYPES)
     user = models.CharField(max_length=100)
     coins = models.TextField()
     hour = models.IntegerField(

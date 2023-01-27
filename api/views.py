@@ -28,11 +28,12 @@ class CreateReminderApiView(APIView):
 
             result = PeriodicTask.objects.create(
                 clocked=schedule,
-                name=f"{data['user']}-everyday-at {data['hour']}:{data['minute']}",
+                name=f"{data['user']} everyday-at {data['hour']}:{data['minute']} for {'Price' if data['reminder_type'] == 'p' else 'Volume 24'}",
                 task='scheduler.tasks.send_message_coin_detail',
                 kwargs=json.dumps({
                     "user": data['user'],
-                    "coins": data['coins']
+                    "coins": data['coins'],
+                    "reminder_type": data['reminder_type']
                 }),
                 one_off=True
             )
