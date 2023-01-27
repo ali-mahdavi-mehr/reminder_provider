@@ -17,7 +17,7 @@ class User(AbstractUser):
 
 class Reminder(models.Model):
     REMINDER_TYPES = (
-        ("P", "PRICE"),
+        ("p", "PRICE"),
         ("v", "VOLUME")
     )
     reminder_type = models.CharField(max_length=5, choices=REMINDER_TYPES)
