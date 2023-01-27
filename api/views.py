@@ -1,13 +1,14 @@
 from datetime import datetime, timedelta
-
 from django.core.exceptions import ValidationError
 from django_celery_beat.models import PeriodicTask, ClockedSchedule
 from rest_framework.views import APIView
 from api.serializer import ReminderSerializer
 from django.http.response import JsonResponse
 from rest_framework import status
+from rest_framework.generics import DestroyAPIView
 
-class CreateReminderView(APIView):
+
+class CreateReminderApiView(APIView):
     serializer_class = ReminderSerializer
 
     def post(self, request):
@@ -34,10 +35,14 @@ class CreateReminderView(APIView):
                 one_off=True
             )
         except ValidationError as e:
-            return JsonResponse(status=status.HTTP_409_CONFLICT, data={"message": "You already has an alert for this time"})
+            return JsonResponse(status=status.HTTP_409_CONFLICT,
+                                data={"message": "You already has an alert for this time"})
 
         return JsonResponse({
-            "scheduled_time_id": schedule.id,
             "reminder_id": result.id,
             "reminder_name": result.name
         }, status=status.HTTP_201_CREATED)
+
+
+class DeleteReminderApiView(DestroyAPIView):
+    queryset =  PeriodicTask.objects.all()
