@@ -7,6 +7,7 @@ from api.serializer import ReminderSerializer
 from django.http.response import JsonResponse
 from rest_framework import status
 from rest_framework.generics import DestroyAPIView
+import pytz
 
 
 class CreateReminderApiView(APIView):
@@ -18,7 +19,8 @@ class CreateReminderApiView(APIView):
             errors = serialized_data.errors
             return JsonResponse(status=status.HTTP_400_BAD_REQUEST, data=errors)
         data = serialized_data.data
-        reminder_time = datetime.utcnow().replace(minute=data['minute'], hour=data['hour'], second=0, microsecond=0)
+        reminder_time = datetime.utcnow().replace(minute=data['minute'], hour=data['hour'], second=0, microsecond=0,
+                                                  tzinfo=pytz.utc)
         if reminder_time <= datetime.utcnow():
             reminder_time += timedelta(days=1)
         schedule, created = ClockedSchedule.objects.get_or_create(
@@ -52,4 +54,4 @@ class CreateReminderApiView(APIView):
 
 
 class DeleteReminderApiView(DestroyAPIView):
-    queryset =  PeriodicTask.objects.all()
+    queryset = PeriodicTask.objects.all()
