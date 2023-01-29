@@ -19,12 +19,11 @@ class CreateReminderApiView(APIView):
             errors = serialized_data.errors
             return JsonResponse(status=status.HTTP_400_BAD_REQUEST, data=errors)
         data = serialized_data.data
-        reminder_time = datetime.utcnow().replace(minute=data['minute'], hour=data['hour'], second=0, microsecond=0,
-                                                  tzinfo=pytz.utc)
+        reminder_time = datetime.utcnow().replace(minute=data['minute'], hour=data['hour'], second=0, microsecond=0)
         if reminder_time <= datetime.utcnow():
             reminder_time += timedelta(days=1)
         schedule, created = ClockedSchedule.objects.get_or_create(
-            clocked_time=reminder_time
+            clocked_time=reminder_time.replace(tzinfo=pytz.utc)
         )
         try:
 
