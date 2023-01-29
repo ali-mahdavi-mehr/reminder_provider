@@ -136,4 +136,6 @@ TASK_ALWAYS_EAGER = False
 
 CRON_CLASSES = [
     "scheduler.cron.UpdateCoins",
+    "scheduler.cron.UpdateReminders",
+
 ]

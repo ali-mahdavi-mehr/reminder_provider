@@ -1,8 +1,6 @@
 import asyncio
 import json
-from datetime import datetime
 from celery import shared_task
-from django_celery_beat.models import PeriodicTask, ClockedSchedule
 from telegram import Bot
 from reminder_provider.settings import env
 from scheduler.redis_configs import redis_db
@@ -31,13 +29,3 @@ def send_message_coin_detail(user: str, coins: str, reminder_type: str):
     asyncio.run(send_coin_detail_message(user, coins, reminder_type))
     return True
 
-
-@shared_task
-def update_schedules_for_tomorrow():
-    now = datetime.utcnow()
-    ClockedSchedule.objects.filter(clocked_time__lt=datetime.utcnow()).update(
-        clocked_time__year=now.year,
-        clocked_time__month=now.month,
-        clocked_time__day=now.day
-    )
-    PeriodicTask.objects.filter(enabled=False).update(enabled=True)
