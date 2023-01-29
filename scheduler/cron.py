@@ -29,7 +29,7 @@ class UpdateCoins(CronJobBase):
 
 
 class UpdateReminders(CronJobBase):
-    RUN_AT_TIMES = ['23:59', "14:22"]
+    RUN_AT_TIMES = ['23:59', "11:59"]
     schedule = Schedule(run_at_times=RUN_AT_TIMES)
     code = 'cronjob.UpdateReminders'
 
