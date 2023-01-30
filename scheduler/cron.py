@@ -5,7 +5,7 @@ from requests import get
 
 from public.constant import REDIS_COIN_DB
 from reminder_provider.settings import env
-from scheduler.redis_configs import get_redis_db
+from scheduler.redis_configs import RedisConnection
 from django_cron import CronJobBase, Schedule
 from scheduler.symbols import coins_symbols_colors
 
@@ -19,14 +19,14 @@ class UpdateCoins(CronJobBase):
         url = env("LEMMON_API")
         response = get(url)
         if response.status_code == 200:
-            redis_db = get_redis_db(REDIS_COIN_DB)
             result = json.loads(response.text)
             coin_list = result["coinsList"]
-            for coin in coin_list:
-                c = coins_symbols_colors.get(coin["name"], False)
-                if c:
-                    coin["symbol"] = c["symbol"]
-                    redis_db.set(coin['symbol'], json.dumps(coin))
+            with RedisConnection(db=REDIS_COIN_DB) as redis_db:
+                for coin in coin_list:
+                    c = coins_symbols_colors.get(coin["name"], False)
+                    if c:
+                        coin["symbol"] = c["symbol"]
+                        redis_db.set(coin['symbol'], json.dumps(coin))
         else:
             print("lemmon down")
 
