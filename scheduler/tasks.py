@@ -2,8 +2,10 @@ import asyncio
 import json
 from celery import shared_task
 from telegram import Bot
+
+from public.constant import REDIS_COIN_DB
 from reminder_provider.settings import env
-from scheduler.redis_configs import redis_db
+from scheduler.redis_configs import redis_db, get_redis_db
 from utils.price_generator import price_seperator, number_generator
 
 
@@ -11,14 +13,15 @@ async def send_coin_detail_message(user, coins, reminder_type):
     text = f"your {'Price' if reminder_type == 'p' else 'Volume 24'} alert is triggered\n"
     bot = Bot(env("TELEGRAM_TOKEN"))
     coins = [coin.strip(" ") for coin in coins.split(",")]
+    redis_db = get_redis_db(REDIS_COIN_DB)
     for coin in coins:
         c = redis_db.get(coin) or json.dumps({"name": "ali", "price": "1322323"})
         c = json.loads(c)
         amount = 0
         if reminder_type == "p":
-            amount = price_seperator(c['price']) + "$"
+            amount = price_seperator(c.get('price', 0) + "$")
         elif reminder_type == "v":
-            amount = "$" + number_generator(c['volume_24h'])
+            amount = "$" + number_generator(c.get('volume_24h', 0))
         text += f"{coin} ({c['name']}) => {amount}\n"
 
     await bot.send_message(chat_id=user, text=text)

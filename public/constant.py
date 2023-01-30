@@ -1,0 +1,1 @@
+REDIS_COIN_DB = 1
