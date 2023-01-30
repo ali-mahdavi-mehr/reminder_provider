@@ -5,7 +5,7 @@ from telegram import Bot
 
 from public.constant import REDIS_COIN_DB
 from reminder_provider.settings import env
-from scheduler.redis_configs import redis_db, get_redis_db
+from scheduler.redis_configs import get_redis_db
 from utils.price_generator import price_seperator, number_generator
 
 
