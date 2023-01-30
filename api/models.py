@@ -20,6 +20,10 @@ class Reminder(models.Model):
         ("p", "PRICE"),
         ("v", "VOLUME")
     )
+    PRODUCER_TYPES = (
+        ("l", "Luna"),
+        ("v", "Venus")
+    )
     reminder_type = models.CharField(max_length=1, choices=REMINDER_TYPES, default="p")
     user = models.CharField(max_length=100)
     coins = models.TextField()
@@ -35,3 +39,4 @@ class Reminder(models.Model):
             MinValueValidator(0)
         ]
     )
+    producer = models.CharField(max_length=100,choices=PRODUCER_TYPES, default="l")

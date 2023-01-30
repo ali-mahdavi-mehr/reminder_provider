@@ -18,6 +18,7 @@ class CreateReminderApiView(APIView):
         if not serialized_data.is_valid():
             errors = serialized_data.errors
             return JsonResponse(status=status.HTTP_400_BAD_REQUEST, data=errors)
+        reminder = serialized_data.save()
         data = serialized_data.data
         reminder_time = datetime.utcnow().replace(minute=data['minute'], hour=data['hour'], second=0, microsecond=0)
         if reminder_time <= datetime.utcnow():
@@ -45,10 +46,10 @@ class CreateReminderApiView(APIView):
             print(e)
             return JsonResponse(status=status.HTTP_400_BAD_REQUEST,
                                 data={"message": str(e)})
-
         return JsonResponse({
             "reminder_id": result.id,
-            "reminder_name": result.name
+            "reminder_name": result.name,
+            "reminder_obj_id": reminder.id
         }, status=status.HTTP_201_CREATED)
 
 
