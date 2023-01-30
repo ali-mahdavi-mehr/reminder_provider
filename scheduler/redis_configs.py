@@ -4,5 +4,5 @@ from reminder_provider.settings import env
 
 
 def get_redis_db(db=0):
-    redis_db = Redis.from_url(env("REDIS_URL"), db=db)
+    redis_db = Redis.from_url(f'{env("REDIS_URL")}/{db}')
 
