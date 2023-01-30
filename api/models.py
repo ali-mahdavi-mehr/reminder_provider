@@ -40,3 +40,4 @@ class Reminder(models.Model):
         ]
     )
     producer = models.CharField(max_length=100,choices=PRODUCER_TYPES, default="l")
+    is_active = models.BooleanField(default=True)
