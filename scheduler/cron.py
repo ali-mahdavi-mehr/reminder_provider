@@ -41,6 +41,7 @@ class UpdateReminders(CronJobBase):
 
     def do(self):
         now = datetime.utcnow()
+        # TODO: Better solution must be considered
         for item in Reminder.objects.filter(is_active=True, producer="l"):
             reminder_time = datetime.utcnow().replace(minute=item.minute, hour=item.hour, second=0, microsecond=0, day=now.day +1)
             schedule, created = ClockedSchedule.objects.get_or_create(
