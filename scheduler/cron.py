@@ -1,4 +1,5 @@
 import json
+import time
 from datetime import datetime
 
 import pytz
@@ -49,7 +50,7 @@ class UpdateReminders(CronJobBase):
             )
             PeriodicTask.objects.create(
                 clocked=schedule,
-                name=f"{item.user} everyday-at {item.hour}:{item.minute} for {'Price' if item.reminder_type == 'p' else 'Volume 24'}",
+                name=f"{item.user} everyday-at {item.hour}:{item.minute} for {'Price' if item.reminder_type == 'p' else 'Volume 24'} created at {time.time()}",
                 task='scheduler.tasks.send_message_coin_detail',
                 kwargs=json.dumps({
                     "user": item.user,
