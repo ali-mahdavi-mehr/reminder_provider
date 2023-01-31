@@ -39,5 +39,5 @@ class Reminder(models.Model):
             MinValueValidator(0)
         ]
     )
-    producer = models.CharField(max_length=100,choices=PRODUCER_TYPES, default="l")
+    producer = models.CharField(max_length=100, choices=PRODUCER_TYPES, default="l")
     is_active = models.BooleanField(default=True)
