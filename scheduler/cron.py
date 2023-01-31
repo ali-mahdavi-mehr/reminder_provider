@@ -1,8 +1,12 @@
 import json
+import time
 from datetime import datetime
+
+import pytz
 from django_celery_beat.models import ClockedSchedule, PeriodicTask
 from requests import get
 
+from api.models import Reminder
 from public.constant import REDIS_COIN_DB
 from reminder_provider.settings import env
 from scheduler.redis_configs import RedisConnection
@@ -32,16 +36,26 @@ class UpdateCoins(CronJobBase):
 
 
 class UpdateReminders(CronJobBase):
-    RUN_AT_TIMES = ['23:59', "11:59"]
+    RUN_AT_TIMES = ['23:59',]
     schedule = Schedule(run_at_times=RUN_AT_TIMES)
     code = 'cronjob.UpdateReminders'
 
     def do(self):
-        print("update coins")
         now = datetime.utcnow()
-        ClockedSchedule.objects.filter(clocked_time__lt=datetime.utcnow()).update(
-            clocked_time__year=now.year,
-            clocked_time__month=now.month,
-            clocked_time__day=now.day
-        )
-        PeriodicTask.objects.filter(enabled=False).update(enabled=True)
+        # TODO: Better solution must be considered
+        for item in Reminder.objects.filter(is_active=True, producer="l"):
+            reminder_time = datetime.utcnow().replace(minute=item.minute, hour=item.hour, second=0, microsecond=0, day=now.day +1)
+            schedule, created = ClockedSchedule.objects.get_or_create(
+                clocked_time=reminder_time.replace(tzinfo=pytz.utc)
+            )
+            PeriodicTask.objects.create(
+                clocked=schedule,
+                name=f"{item.user} everyday-at {item.hour}:{item.minute} for {'Price' if item.reminder_type == 'p' else 'Volume 24'} created at {time.time()}",
+                task='scheduler.tasks.send_message_coin_detail',
+                kwargs=json.dumps({
+                    "user": item.user,
+                    "coins": item.coins,
+                    "reminder_type": item.reminder_type
+                }),
+                one_off=True
+            )

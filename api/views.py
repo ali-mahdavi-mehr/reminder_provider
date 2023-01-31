@@ -3,6 +3,8 @@ from datetime import datetime, timedelta
 from django.core.exceptions import ValidationError
 from django_celery_beat.models import PeriodicTask, ClockedSchedule
 from rest_framework.views import APIView
+
+from api.models import Reminder
 from api.serializer import ReminderSerializer
 from django.http.response import JsonResponse
 from rest_framework import status
@@ -47,11 +49,10 @@ class CreateReminderApiView(APIView):
             return JsonResponse(status=status.HTTP_400_BAD_REQUEST,
                                 data={"message": str(e)})
         return JsonResponse({
-            "reminder_id": result.id,
+            "reminder_id": reminder.id,
             "reminder_name": result.name,
-            "reminder_obj_id": reminder.id
         }, status=status.HTTP_201_CREATED)
 
 
 class DeleteReminderApiView(DestroyAPIView):
-    queryset = PeriodicTask.objects.all()
+    queryset = Reminder.objects.all()
