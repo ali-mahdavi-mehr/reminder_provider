@@ -10,7 +10,7 @@ from utils.price_generator import price_seperator, number_generator
 
 
 async def send_coin_detail_message(user, coins, reminder_type):
-    text = f"your {'Price' if reminder_type == 'p' else 'Volume 24'} alert is triggered\n"
+    text = f"{'Price' if reminder_type == 'p' else 'Volume'} Reminder 🔔\n"
     bot = Bot(env("TELEGRAM_TOKEN"))
     coins = [coin.strip(" ") for coin in coins.split(",")]
     with RedisConnection(db=REDIS_COIN_DB) as redis_db:
