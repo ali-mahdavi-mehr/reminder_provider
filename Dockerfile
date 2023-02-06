@@ -21,5 +21,4 @@ CMD python3 manage.py makemigrations --noinput && \
     python3 manage.py migrate --noinput && \
     python3 manage.py collectstatic --noinput && \
     python3 manage.py createsuperuser --email $ADMIN_EMAIL --noinput || true && \
-    python3 manage.py runcrons && \
     gunicorn -b 0.0.0.0:8000 reminder_provider.wsgi
