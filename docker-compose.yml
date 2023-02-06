@@ -71,19 +71,6 @@ services:
     - rabbitmq
     - web
 
- flower:
-    container_name: "flower"
-    build: .
-    command: celery -A reminder_provider flower -l debug
-    environment:
-      - CELERY_BROKER_URL=amqp://myrabbit:5672
-      - STDOUT_LOGGING=1
-    volumes:
-      - ./app:/usr/src/app
-    depends_on:
-      - rabbitmq
-    ports:
-      - "5555:5555"
  celerybeat:
     container_name: "celerybeat"
     build: .
