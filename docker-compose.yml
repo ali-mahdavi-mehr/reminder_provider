@@ -4,7 +4,7 @@ services:
  redis:
    container_name: redis
    restart: always
-   image: redis
+   image: redis:alpine
    ports:
       - "6379:6379"
    volumes:
