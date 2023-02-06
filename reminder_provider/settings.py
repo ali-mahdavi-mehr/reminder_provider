@@ -29,7 +29,6 @@ INSTALLED_APPS = [
     'django_celery_beat',
     "api.apps.ApiConfig",
     "scheduler",
-    "django_cron",
 ]
 
 MIDDLEWARE = [
@@ -133,9 +132,3 @@ CELERY_TIMEZONE = 'UTC'
 CELERY_TASK_DEFAULT_QUEUE = 'default'
 WORKER_PREFETCH_MULTIPLIER = 6
 TASK_ALWAYS_EAGER = False
-
-CRON_CLASSES = [
-    "scheduler.cron.UpdateCoins",
-    "scheduler.cron.UpdateReminders",
-
-]

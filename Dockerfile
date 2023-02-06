@@ -15,6 +15,7 @@ RUN pip install -r requirements.txt
 
 COPY . /code/
 
+
 # preparing django project
 CMD python3 manage.py makemigrations --noinput && \
     python3 manage.py migrate --noinput && \

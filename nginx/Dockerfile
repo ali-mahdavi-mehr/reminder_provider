@@ -1,4 +1,4 @@
-FROM nginx:alpine
+FROM nginx:latest
 
 # remove exists ngix conf and add my own nginx conf
 RUN rm /etc/nginx/conf.d/default.conf

@@ -7,7 +7,6 @@ from api.manager import CustomUserManager
 class User(AbstractUser):
     objects = CustomUserManager()
 
-
     username = None
     email = models.EmailField('email address', unique=True)
     REQUIRED_FIELDS = AbstractUser.REQUIRED_FIELDS[:]
@@ -41,3 +40,6 @@ class Reminder(models.Model):
     )
     producer = models.CharField(max_length=100, choices=PRODUCER_TYPES, default="l")
     is_active = models.BooleanField(default=True)
+
+    def __str__(self):
+        return f"{self.user} {self.reminder_type} {self.hour}:{self.minute} {self.producer}"
